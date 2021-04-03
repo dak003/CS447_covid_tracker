@@ -20,7 +20,7 @@ class Heatmap extends React.Component {
                 {lat: 39.48, lng: -76.20},
             ],
             options: {   
-                radius: 100,   
+                radius: 20,   
                 opacity: 0.6,
             }
         };
@@ -29,15 +29,15 @@ class Heatmap extends React.Component {
         // Important! Always set the container height explicitly
         <GoogleMapReact
             ref={(el) => this._googleMap = el}
-            bootstrapURLKeys={{ key: "API_KEY" }}
+            bootstrapURLKeys={{ key: "API-key" }}
             defaultCenter={this.props.center}
             defaultZoom={this.props.zoom}
             heatmapLibrary={true}          
             heatmap={heatMapData}          
             >
             <AnyReactComponent
-                lat={59.955413}
-                lng={30.337844}
+                lat={39.45}
+                lng={-76.64}
                 text="My Marker"
             />
             </GoogleMapReact>

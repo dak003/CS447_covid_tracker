@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Heatmap from './Heatmap';
+import CovidState from './CovidState';
+import VaccineState from './VaccineState';
+import CloseState from './CloseState';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -15,6 +18,21 @@ ReactDOM.render(
 ReactDOM.render(
   <Heatmap />,
   document.getElementById('heatmap')
+);
+
+ReactDOM.render(
+  <CovidState />,
+  document.getElementById('covid-selector')
+);
+
+ReactDOM.render(
+  <VaccineState />,
+  document.getElementById('vaccine-selector')
+);
+
+ReactDOM.render(
+  <CloseState />,
+  document.getElementById('close-selector')
 );
 
 // If you want to start measuring performance in your app, pass a function
