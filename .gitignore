@@ -5,6 +5,7 @@
 /covid-tracker-api/api/__pycache__
 /covid-tracker-api/env/Lib
 /.pnp
+/data-parsing
 .pnp.js
 
 # testing
