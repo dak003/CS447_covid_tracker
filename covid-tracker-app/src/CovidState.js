@@ -6,15 +6,17 @@ class CovidState extends Component {
   constructor () {
     super()
     this.state = {
-      username: ''
     }
 
     this.handleClick = this.handleClick.bind(this)
   }
 
   handleClick () {
-    axios.get('https://api.github.com/users/maecapozzi')
-      .then(response => this.setState({username: response.data.name}))
+    axios.get('http://localhost:8000/api/?iscounty=0')
+      .then(response => {
+        
+        //this.setState({username: response}) 
+      })
   }
 
   render () {

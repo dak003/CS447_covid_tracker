@@ -6,10 +6,10 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 class Heatmap extends React.Component {
     static defaultProps = {
         center: {
-        lat: 39.39,
-        lng: -76.49
+        lat: 39.1,
+        lng: -97.8
         },
-        zoom: 20
+        zoom: 5
     };
 
     render() {
@@ -20,13 +20,12 @@ class Heatmap extends React.Component {
                 {lat: 39.48, lng: -76.20},
             ],
             options: {   
-                radius: 20,   
+                radius: 15,   
                 opacity: 0.6,
             }
         };
 
         return (
-        // Important! Always set the container height explicitly
         <GoogleMapReact
             ref={(el) => this._googleMap = el}
             bootstrapURLKeys={{ key: "API-key" }}

@@ -3,8 +3,14 @@ from django.conf.urls import url
 from django.urls import path, include
 from .views import (
     CaseDataApiView,
+    CountiesApiView,
+    StatesApiView,
+    VacDataApiView,
 )
 
 urlpatterns = [
-    path('', CaseDataApiView.as_view()),
+    path('casedata/', CaseDataApiView.as_view()),
+    path('counties/', CountiesApiView.as_view()),
+    path('states/', StatesApiView.as_view()),
+    path('vacdata/', VacDataApiView.as_view()),
 ]

@@ -25,20 +25,34 @@ class Casedata(models.Model):
         db_table = 'CaseData'
 
 
-# class Counties(models.Model):
-#     countyname = models.CharField(db_column='countyName', unique=True, max_length=40)  # Field name made lowercase.
-#     latitude = models.FloatField()
-#     longitude = models.FloatField()
+class Counties(models.Model):
+    countyname = models.CharField(db_column='countyName', max_length=100)  # Field name made lowercase.
+    latitude = models.FloatField(db_column='latitude', null=False)
+    longitude = models.FloatField(db_column='longitude', null=False)
+    fips = models.IntegerField(db_column='fips', primary_key=True)
+    state = models.CharField(db_column='state', max_length=100)
 
-#     class Meta:
-#         managed = False
-#         db_table = 'Counties'
+    class Meta:
+        managed = False
+        db_table = 'Counties'
 
 
-# class States(models.Model):
-#     stateid = models.IntegerField(db_column='StateID', blank=True, null=True)  # Field name made lowercase.
-#     statename = models.TextField(db_column='stateName', blank=True, null=True)  # Field name made lowercase.
+class States(models.Model):
+    stateid = models.IntegerField(db_column='StateID', blank=True, primary_key=True)  # Field name made lowercase.
+    statename = models.CharField(db_column='stateName', max_length=100)  # Field name made lowercase.
+    abrv = models.CharField(db_column='abrv', max_length=100)
 
-#     class Meta:
-#         managed = False
-#         db_table = 'States'
+    class Meta:
+        managed = False
+        db_table = 'States'
+
+class vacData(models.Model):
+    stateid = models.IntegerField(db_column='StateID', blank=True, primary_key=True)  # Field name made lowercase.
+    statename = models.CharField(db_column='stateName', max_length=45, null=False)  # Field name made lowercase.
+    vacdelivered = models.IntegerField(db_column='vacDelivered', null=False)
+    vacadministered = models.IntegerField(db_column='vacAdministered', null=False)
+    numberanydose = models.IntegerField(db_column='numberAnyDose', null=False)
+    numberfullyvac = models.IntegerField(db_column='numberFullyVac', null=False)
+    class Meta:
+        managed = False
+        db_table = 'vacData'
