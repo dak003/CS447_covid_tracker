@@ -20,7 +20,7 @@ class CountyDataSerializer(serializers.ModelSerializer):
 class StateDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = States
-        fields = ["stateid", "statename", "abrv"]
+        fields = ["stateid", "statename", "abrv", "latitude", "longitude",]
 
 
 class VacDataSerializer(serializers.ModelSerializer):

@@ -24,6 +24,10 @@ class CaseDataApiView(APIView):
         params = request.query_params
         if(len(params) == 0):
             cases = Casedata.objects.all()
+        elif("countyname" in params.keys() and "stateabvr" in params.keys()):
+            cases = Casedata.objects.filter(countyname = params['countyname'], stateabvr = params['stateabvr'])
+        elif("iscounty" in params.keys() and "stateabvr" in params.keys()):
+            cases = Casedata.objects.filter(iscounty = params['iscounty'], stateabvr = params['stateabvr'])
         elif("iscounty" in params.keys()):
             cases = Casedata.objects.filter(iscounty = params['iscounty'])
         elif("countyname" in params.keys()):
@@ -57,10 +61,12 @@ class CountiesApiView(APIView):
         params = request.query_params
         if(len(params) == 0):
             counties = Counties.objects.all()
+        elif("state" in params.keys() and "countyname" in params.keys()):
+            counties = Counties.objects.filter(state=params['state'], countyname = params['countyname'])
         elif("state" in params.keys()):
             counties = Counties.objects.filter(state = params['state'])
-        # elif("countyname" in params.keys()):
-        #     counties = Counties.objects.filter(countyname = params['countyname'])
+        elif("countyname" in params.keys()):
+            counties = Counties.objects.filter(countyname = params['countyname'])
         serializer = CountyDataSerializer(counties, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -74,8 +80,8 @@ class StatesApiView(APIView):
         params = request.query_params
         if(len(params) == 0):
             states = States.objects.all()
-        # elif("iscounty" in params.keys()):
-        #     counties = Counties.objects.filter(iscounty = params['iscounty'])
+        elif("abrv" in params.keys()):
+            states = States.objects.filter(abrv = params['abrv'])
         # elif("countyname" in params.keys()):
         #     counties = Counties.objects.filter(countyname = params['countyname'])
         serializer = StateDataSerializer(states, many=True)
@@ -91,8 +97,8 @@ class VacDataApiView(APIView):
         params = request.query_params
         if(len(params) == 0):
             vacs = vacData.objects.all()
-        # elif("iscounty" in params.keys()):
-        #     counties = Counties.objects.filter(iscounty = params['iscounty'])
+        elif("statename" in params.keys()):
+            vacs = vacData.objects.filter(statename = params['statename'])
         # elif("countyname" in params.keys()):
         #     counties = Counties.objects.filter(countyname = params['countyname'])
         serializer = VacDataSerializer(vacs, many=True)
