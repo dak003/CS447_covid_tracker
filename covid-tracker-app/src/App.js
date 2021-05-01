@@ -8,7 +8,7 @@ function App() {
           <div className="selector" id="covid-selector"></div>
           <div className="selector" id="vaccine-selector"></div>
           <div className="selector" id="close-selector"></div>
-          <div className="dropdown-selector" id="state-dropdown"></div>
+          <div id="state-dropdown"></div>
         </div>
         <div className="row">
           <div className="column-heatmap" style={{backgroundColor: "#aaa"}}>

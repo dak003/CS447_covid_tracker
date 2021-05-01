@@ -1,47 +1,121 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
+import axios from 'axios'
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
+import globalVar from './globals'
 class Heatmap extends React.Component {
-    static defaultProps = {
-        center: {
-        lat: 39.1,
-        lng: -97.8
-        },
-        zoom: 5
-    };
+    constructor () {
+        super()
+        this.state = {
+            center: {
+                lat: 39,
+                lng: -97
+            },
+            zoom: 4,
+            heatMapData: {
+                positions: [
+                    
+                ],
+                options: {   
+                    radius: 20,   
+                    opacity: 0.6,
+                }
+            }
+        }
+    }
+
+    apiIsLoaded = (map, maps, lat, lng, zoom) => {
+        if (map) {
+          const latLng = new maps.LatLng(lat, lng); // Makes a latlng
+          map.panTo(latLng);
+          map.setZoom(zoom);
+        }
+      };
 
     render() {
-
-        var heatMapData = {
-            positions: [
-                {lat: 39.45, lng: -76.64},
-                {lat: 39.48, lng: -76.20},
-            ],
-            options: {   
-                radius: 15,   
-                opacity: 0.6,
-            }
-        };
-
+        console.log(this.state.heatMapData)
         return (
         <GoogleMapReact
-            ref={(el) => this._googleMap = el}
+            ref={(ref) => {
+                this.mapRef = ref
+            }}
             bootstrapURLKeys={{ key: "API-key" }}
-            defaultCenter={this.props.center}
-            defaultZoom={this.props.zoom}
+            yesIWantToUseGoogleMapApiInternals
+            onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps, this.state.center.lat, this.state.center.lng, this.state.zoom)}
+            center={this.state.center}
+            zoom={this.state.zoom}
             heatmapLibrary={true}          
-            heatmap={heatMapData}          
+            heatmap={this.state.heatMapData}          
             >
-            <AnyReactComponent
-                lat={39.45}
-                lng={-76.64}
-                text="My Marker"
-            />
             </GoogleMapReact>
         );
     }
+
+    componentDidMount(){
+        globalVar.move_center = (map_coord) => {
+            const updateCenter = map_coord.data.map(d => ({
+                lat : d.latitude,
+                lng : d.longitude
+            }))
+            this.setState({center: updateCenter[0], zoom: map_coord.zoom})
+        };
+
+        globalVar.updateHeatMap = (data) => {
+            this.setState({heatMapData: data})
+        }
+
+        globalVar.backToCenter = (data) => {
+            this.setState({center: data.center, zoom: data.zoom})
+        }
+
+        axios.get(`http://localhost:8000/api/casedata/?iscounty=0`).then(cases => {
+            axios.get('http://localhost:8000/api/states/').then(states => {
+                var output = []
+                var country_data = []
+                states.data.forEach((state) => {
+                    cases.data.forEach((caseData) => {
+                        if (state.stateid === caseData.stateid){
+                            var modifier = 0
+                            if (caseData.casesconfirmed > 200000){
+                                modifier = 100000
+                            }else if (caseData.casesconfirmed > 100000){
+                                modifier = 50000
+                            }else {
+                                modifier = 10000
+                            }
+                            output.push({lat: state.latitude, lng: state.longitude, weight: caseData.casesconfirmed/modifier})
+
+                            country_data.push({casesconfirmed: caseData.casesconfirmed, casesprobable: caseData.casesprobable, deathsconfirmed: caseData.deathsconfirmed, deathsprobable: caseData.deathsprobable})
+                        }
+                    })
+                })
+
+                var totalcases = 0
+                var casesprobable = 0
+                var totaldeaths = 0
+                var deathsprobable = 0
+
+                country_data.forEach((data)=> {
+                    totalcases += data.casesconfirmed
+                    casesprobable += data.casesprobable
+                    totaldeaths += data.deathsconfirmed
+                    deathsprobable += data.deathsprobable
+                })
+
+                globalVar.update_stats({title: "U.S Covid Cases", totalcases: totalcases.toLocaleString(), casesprobable: casesprobable.toLocaleString(), totaldeaths: totaldeaths.toLocaleString(), deathsprobable: deathsprobable.toLocaleString()})
+
+                var data = {
+                    positions: output,
+                    options: {   
+                        radius: 60,   
+                        opacity: 0.6,
+                    }
+                }
+                this.setState({heatMapData: data})
+            })
+        })
+    }
 }
 
-export default Heatmap;
+export {globalVar}
+export default Heatmap

@@ -41,6 +41,8 @@ class States(models.Model):
     stateid = models.IntegerField(db_column='StateID', blank=True, primary_key=True)  # Field name made lowercase.
     statename = models.CharField(db_column='stateName', max_length=100)  # Field name made lowercase.
     abrv = models.CharField(db_column='abrv', max_length=100)
+    latitude = models.FloatField(db_column='latitude', null=False)
+    longitude = models.FloatField(db_column='longitude', null=False)
 
     class Meta:
         managed = False

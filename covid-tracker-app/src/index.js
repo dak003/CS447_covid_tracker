@@ -8,6 +8,7 @@ import CovidState from './CovidState';
 import VaccineState from './VaccineState';
 import CloseState from './CloseState';
 import SelectState from './SelectState';
+import Statistics from './Statistics';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,6 +20,11 @@ ReactDOM.render(
 ReactDOM.render(
   <Heatmap />,
   document.getElementById('heatmap')
+);
+
+ReactDOM.render(
+  <Statistics />,
+  document.getElementById('statistics')
 );
 
 ReactDOM.render(

@@ -3,20 +3,24 @@ import Select from 'react-select'
 import axios from 'axios'
 
 import SelectCounty from './SelectCounty'
+import globalVar from './globals'
 
 class SelectState extends Component {
     constructor (props) {
         super(props)
+        this.handler = this.handler.bind(this)
         this.state = {
+            selectRef: null,
             selectOptions: [],
             selected: "",
-            counties: []
+            counties: [],
+            updated: false,
+            clear: false
         }
     }
 
     async getOptions(){
         const res = await axios.get('http://localhost:8000/api/states/')
-        console.log(res)
         const data = res.data
     
         const options = data.map(d => ({
@@ -26,23 +30,156 @@ class SelectState extends Component {
         this.setState({selectOptions: options})
       }
 
-    handleChange (event) {
-        axios.get(`http://localhost:8000/api/counties/?state=${event.value}`).then(response => {
-            this.setState({selected: event.value, counties: response.data})
+    handler() {
+        this.setState({updated: false})
+    }
+
+    getCases(abrv){
+        globalVar.update_stats({})
+        axios.get(`http://localhost:8000/api/casedata/?iscounty=0&stateabvr=${abrv}`).then(statecases => {
+            var caseData = statecases.data[0]
+            globalVar.update_stats({title: caseData.countyname, casesconfirmed: caseData.casesconfirmed.toLocaleString(), casesprobable: caseData.casesprobable.toLocaleString(), deathsconfirmed: caseData.deathsconfirmed.toLocaleString(), deathsprobable: caseData.deathsprobable.toLocaleString()})
         })
+
+        axios.get(`http://localhost:8000/api/casedata/?iscounty=1&stateabvr=${abrv}`).then(cases => {
+            axios.get(`http://localhost:8000/api/counties/?state=${abrv}`).then(counties => {
+                var output = []
+                counties.data.forEach((county) => {
+                    cases.data.forEach((caseData) => {
+                        if (county.countyname === caseData.countyname){
+                            output.push({lat: county.latitude, lng: county.longitude, weight: caseData.casesconfirmed/10000})
+                        }
+                    })
+                })
+                var data = {
+                    positions: output,
+                    options: {   
+                        radius: 50,   
+                        opacity: 0.6,
+                    }
+                }
+                globalVar.updateHeatMap(data)
+            })
+        })
+    }
+
+    getVacs(abrv){
+        axios.get(`http://localhost:8000/api/states/?abrv=${abrv}`).then(state => {
+            axios.get(`http://localhost:8000/api/vacdata/?statename=${state.data[0].statename}`).then(vacs => {
+                data = vacs.data[0]
+                globalVar.update_stats({title: state.data[0].statename, "Vaccines Delivered": data.vacdelivered.toLocaleString(), "Vaccines Administered": data.vacadministered.toLocaleString(), "Received First Dose": data.numberanydose.toLocaleString(), "Fully Vaccinated": data.numberfullyvac.toLocaleString()})
+
+                var data = {
+                    positions: [
+                        {lat: state.data[0].latitude, lng: state.data[0].longitude, weight: vacs.data[0].numberfullyvac},
+                    ],
+                    options: {   
+                        radius: 50,   
+                        opacity: 0.6,
+                    }
+                }
+                globalVar.updateHeatMap(data)
+            })
+        })
+    }
+
+    getClosures(){
+
+    }
+
+    updateHeatMap(abrv) {
+        var type = globalVar.app_state
+        if (type === "case"){
+            this.getCases(abrv)
+        }else if (type === "vaccine"){
+            this.getVacs(abrv)
+        }else {
+            this.getClosures(abrv)
+        }
+    }
+
+    handleChange (event) {
+        this.updateHeatMap(event.value)
+
+        axios.get(`http://localhost:8000/api/states/?abrv=${event.value}`).then(response => {
+            globalVar.move_center({data: response.data, zoom: 8})
+        })
+        if (globalVar.app_state === "case"){
+            axios.get(`http://localhost:8000/api/counties/?state=${event.value}`).then(response => {
+                this.setState({selected: event.value, counties: response.data, updated: true})
+            })
+        }else {
+            this.setState({counties: []})
+        }
       }
 
     render () {
+        if (this.state.selectRef != null){
+            
+            if (this.state.clear){
+                this.setState({value: null, clear: false})
+                return null
+            }
+        }
+
+        const customStyles = {
+            control: (base, state) => ({
+                ...base,
+                background: '#fff',
+                borderColor: '#9e9e9e',
+                minHeight: '35px',
+                height: '35px',
+                boxShadow: state.isFocused ? null : null,
+              }),
+
+              option: (base) => ({
+                ...base,
+                color: "black",
+              }),
+          
+              valueContainer: (base) => ({
+                ...base,
+                height: '38px',
+                padding: '0 6px'
+              }),
+          
+              input: (base) => ({
+                ...base,
+                margin: '0px',
+              }),
+              indicatorSeparator: base => ({
+                display: 'none',
+              }),
+              indicatorsContainer: (base) => ({
+                ...base,
+                height: '38px',
+              }),
+        };
         return (
             <div>
-                <Select onChange={this.handleChange.bind(this)} options={this.state.selectOptions} />
-                <SelectCounty data={this.state.counties} />
+                <div className="dropdown-selector">
+                    <Select
+                    ref={ref => {
+                        this.state.selectRef = ref
+                    }}  
+                    styles={customStyles}
+                    onChange={this.handleChange.bind(this)}
+                    options={this.state.selectOptions}
+                    />
+                </div>
+                <div className="dropdown-selector">
+                    <SelectCounty updateParent={this.handler} counties={this.state.counties} state={this.state.selected} updated={this.state.updated} />
+                </div>
             </div>
         )
     }
 
     componentDidMount(){
         this.getOptions()
+
+        globalVar.clear_state = () => {
+            this.setState({clear: true, counties: []})
+        }
     }
 }
 
