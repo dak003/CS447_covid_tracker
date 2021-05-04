@@ -21,7 +21,7 @@ class Statistics extends Component {
             )
         }else{
             markup.push(
-                <div style={{float: "left"}, {width: "100%"}}>
+                <div style={{float: "left"}, {width: "100%"}, {height: "75px"}}>
                     <span style={{float: "left"}}> {element}: {this.state.stats[element]}</span>
                     <br style={{clear: "all"}}></br>
                 </div>

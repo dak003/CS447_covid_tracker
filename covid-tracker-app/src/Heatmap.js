@@ -39,7 +39,7 @@ class Heatmap extends React.Component {
             ref={(ref) => {
                 this.mapRef = ref
             }}
-            bootstrapURLKeys={{ key: "API-key" }}
+            bootstrapURLKeys={{ key: "AIzaSyBuE1eYePSbGCivR7z1ko-tngdrPVIHObw" }}
             yesIWantToUseGoogleMapApiInternals
             onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps, this.state.center.lat, this.state.center.lng, this.state.zoom)}
             center={this.state.center}

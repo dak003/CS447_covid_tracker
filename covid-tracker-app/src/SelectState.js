@@ -83,8 +83,39 @@ class SelectState extends Component {
         })
     }
 
-    getClosures(){
+    getClosures(abrv){
+        axios.get(`http://localhost:8000/api/states/?abrv=${abrv}`).then(state => {
+            axios.get(`http://localhost:8000/api/closuredata/?statename=${state.data[0].statename}`).then(closures => {
+                var data = closures.data[0]
+                Object.keys(data).forEach((key) => {
+                    if (data[key] === "-"){
+                        data[key] = "No data available."
+                    }
+                })
 
+                globalVar.update_stats({title: state.data[0].statename,
+                                        "State Of Emergency": data.stateofemergency,
+                                        "Stay at Home Mandate": data.stayathome,
+                                        "Masks Required": data.masks,
+                                        "Quarantine After Travel": data.travelquarantine,
+                                        "Gathering Limitations": data.largegatherings,
+                                        "Businesses": data.nonessentialclosed,
+                                        "Restaurants": data.restaurants,
+                                        "Bars": data.bars,
+                                        })
+
+                // var data = {
+                //     positions: [
+                //         {lat: state.data[0].latitude, lng: state.data[0].longitude, weight: closures.data[0].numberfullyvac},
+                //     ],
+                //     options: {   
+                //         radius: 50,   
+                //         opacity: 0.6,
+                //     }
+                // }
+                // globalVar.updateHeatMap(data)
+            })
+        })
     }
 
     updateHeatMap(abrv) {
@@ -93,7 +124,7 @@ class SelectState extends Component {
             this.getCases(abrv)
         }else if (type === "vaccine"){
             this.getVacs(abrv)
-        }else {
+        }else if (type === "closure"){
             this.getClosures(abrv)
         }
     }

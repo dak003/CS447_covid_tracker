@@ -58,3 +58,19 @@ class vacData(models.Model):
     class Meta:
         managed = False
         db_table = 'vacData'
+
+class closureData(models.Model):
+    stateid = models.IntegerField(db_column='stateID', blank=True, primary_key=True)  # Field name made lowercase.
+    statename = models.TextField(db_column='stateName', max_length=65535, null=False)  # Field name made lowercase.
+    stayathome = models.TextField(db_column='stayAtHome', max_length=65535, null=False)
+    travelquarantine = models.TextField(db_column='travelQuarantine', max_length=65535, null=False)
+    nonessentialclosed = models.TextField(db_column='nonEssentialClosed', max_length=65535, null=False)
+    largegatherings = models.TextField(db_column='largeGatherings', max_length=65535, null=False)
+    restaurants = models.TextField(db_column='restaurants', max_length=65535, null=False)
+    bars = models.TextField(db_column='bars', max_length=65535, null=False)
+    masks = models.TextField(db_column='masks', max_length=65535, null=False)
+    stateofemergency = models.TextField(db_column='stateOfEmergency', max_length=65535, null=False)
+
+    class Meta:
+        managed = False
+        db_table = 'closureData'

@@ -6,6 +6,7 @@ from .views import (
     CountiesApiView,
     StatesApiView,
     VacDataApiView,
+    ClosureDataApiView,
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path('counties/', CountiesApiView.as_view()),
     path('states/', StatesApiView.as_view()),
     path('vacdata/', VacDataApiView.as_view()),
+    path('closuredata/', ClosureDataApiView.as_view()),
 ]
