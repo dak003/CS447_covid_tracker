@@ -15,6 +15,9 @@ from .serializers import StateDataSerializer
 from api.models import vacData
 from .serializers import VacDataSerializer
 
+from api.models import closureData
+from .serializers import ClosureDataSerializer
+
 class CaseDataApiView(APIView):
     # add permission to check if user is authenticated
     # permission_classes = [permissions.IsAuthenticated]
@@ -102,4 +105,19 @@ class VacDataApiView(APIView):
         # elif("countyname" in params.keys()):
         #     counties = Counties.objects.filter(countyname = params['countyname'])
         serializer = VacDataSerializer(vacs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ClosureDataApiView(APIView):
+    # add permission to check if user is authenticated
+    # permission_classes = [permissions.IsAuthenticated]
+
+    # 1. List all
+    def get(self, request, *args, **kwargs):
+        params = request.query_params
+        if(len(params) == 0):
+            closures = closureData.objects.all()
+        elif("statename" in params.keys()):
+            closures = closureData.objects.filter(statename = params['statename'])
+        serializer = ClosureDataSerializer(closures, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

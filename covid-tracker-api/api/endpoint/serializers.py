@@ -4,6 +4,7 @@ from api.models import Casedata
 from api.models import Counties
 from api.models import States
 from api.models import vacData
+from api.models import closureData
 
 class CaseDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,3 +28,8 @@ class VacDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = vacData
         fields = ["stateid", "statename", "vacdelivered", "vacadministered", "numberanydose", "numberfullyvac"]
+
+class ClosureDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = closureData
+        fields = ["stateid", "statename", "stayathome", "travelquarantine", "nonessentialclosed", "largegatherings", "restaurants", "bars", "masks", "stateofemergency"]

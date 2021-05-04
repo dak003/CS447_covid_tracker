@@ -1,25 +1,45 @@
 import React, { Component } from 'react'
 
 import axios from 'axios'
+import globalVar from './globals'
 
 class CloseState extends Component {
   constructor () {
     super()
     this.state = {
-      username: ''
     }
 
     this.handleClick = this.handleClick.bind(this)
   }
 
   handleClick () {
-    axios.get('https://api.github.com/users/maecapozzi')
-      .then(response => this.setState({username: response.data.name}))
+    globalVar.app_state = "closure"
+    globalVar.clear_state()
+    
+
+    globalVar.update_stats({title: "U.S State Closures", info: "Select a state to display current closures and policy information."})
+
+    var data = {
+        positions: [],
+        options: {   
+            radius: 60,   
+            opacity: 0.6,
+        }
+    }
+    globalVar.updateHeatMap(data)
+
+    globalVar.backToCenter({
+      center: {
+        lat: 39,
+        lng: -97
+      },
+      zoom: 4,
+    })
   }
 
   render () {
     return (
-        <button className='button' onClick={this.handleClick}>Closures</button>
+        <button className='button' onClick={this.handleClick}>State Closures</button>
     )
   }
 }
