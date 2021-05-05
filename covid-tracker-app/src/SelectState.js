@@ -37,8 +37,11 @@ class SelectState extends Component {
     getCases(abrv){
         globalVar.update_stats({})
         axios.get(`http://localhost:8000/api/casedata/?iscounty=0&stateabvr=${abrv}`).then(statecases => {
-            var caseData = statecases.data[0]
-            globalVar.update_stats({title: caseData.countyname, casesconfirmed: caseData.casesconfirmed.toLocaleString(), casesprobable: caseData.casesprobable.toLocaleString(), deathsconfirmed: caseData.deathsconfirmed.toLocaleString(), deathsprobable: caseData.deathsprobable.toLocaleString()})
+            if (statecases.data.length > 0){
+                var caseData = statecases.data[0]
+
+            globalVar.update_stats({title: caseData.countyname, "Total Cases": caseData.casesconfirmed.toLocaleString(), "Cases Probable": caseData.casesprobable.toLocaleString(), "Total Deaths": caseData.deathsconfirmed.toLocaleString(), "Deaths Probable": caseData.deathsprobable.toLocaleString()})
+            }
         })
 
         axios.get(`http://localhost:8000/api/casedata/?iscounty=1&stateabvr=${abrv}`).then(cases => {
@@ -192,7 +195,8 @@ class SelectState extends Component {
                     <Select
                     ref={ref => {
                         this.state.selectRef = ref
-                    }}  
+                    }}
+                    placeholder = "Select State..."  
                     styles={customStyles}
                     onChange={this.handleChange.bind(this)}
                     options={this.state.selectOptions}

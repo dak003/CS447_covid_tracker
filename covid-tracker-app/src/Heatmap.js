@@ -33,7 +33,6 @@ class Heatmap extends React.Component {
       };
 
     render() {
-        console.log(this.state.heatMapData)
         return (
         <GoogleMapReact
             ref={(ref) => {
@@ -102,7 +101,7 @@ class Heatmap extends React.Component {
                     deathsprobable += data.deathsprobable
                 })
 
-                globalVar.update_stats({title: "U.S Covid Cases", totalcases: totalcases.toLocaleString(), casesprobable: casesprobable.toLocaleString(), totaldeaths: totaldeaths.toLocaleString(), deathsprobable: deathsprobable.toLocaleString()})
+                globalVar.update_stats({title: "U.S Covid Cases", "Total Cases": totalcases.toLocaleString(), "Cases Probable": casesprobable.toLocaleString(), "Total Deaths": totaldeaths.toLocaleString(), "Deaths Probable": deathsprobable.toLocaleString()})
 
                 var data = {
                     positions: output,

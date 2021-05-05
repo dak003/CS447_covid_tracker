@@ -9,6 +9,9 @@ function App() {
           <div className="selector" id="vaccine-selector"></div>
           <div className="selector" id="close-selector"></div>
           <div id="state-dropdown"></div>
+          <div style= {{float: "right"}}>
+            <div style= {{float: "right" }, {paddingRight: "40px"}} id="informational"></div>
+          </div>
         </div>
         <div className="row">
           <div className="column-heatmap" style={{backgroundColor: "#aaa"}}>
@@ -17,7 +20,6 @@ function App() {
           <div className="column-statistics" style={{backgroundColor: "#4287f5"}}>
             <div id="statistics"></div>
           </div>
-
         </div>
       </header>
     </div>

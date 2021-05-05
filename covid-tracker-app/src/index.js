@@ -9,6 +9,7 @@ import VaccineState from './VaccineState';
 import CloseState from './CloseState';
 import SelectState from './SelectState';
 import Statistics from './Statistics';
+import Informational from './Informational';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -46,6 +47,11 @@ ReactDOM.render(
   <SelectState />,
   document.getElementById('state-dropdown')
 );
+
+ReactDOM.render(
+  <Informational />,
+  document.getElementById('informational')
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
